@@ -130,10 +130,11 @@ def Batch_train(model):
             torch.cuda.empty_cache()
 
 device = torch.device("cuda:{}".format(args.gpu))
-
+print(dgl.__path__)
 '''加载图和标签'''
 G=torch.load('{}/{}.pkl'.format(args.data_dir,args.graph))
-print(G)
+# print(G)
+# G=torch.load('../taobao_data/G_ori.pkl')
 labels=G.nodes['user'].data[args.label]
 print(labels.max().item()+1)
 
@@ -182,21 +183,21 @@ val_idx_item = torch.tensor(shuffle[int(G.number_of_nodes('item')*0.75):int(G.nu
 test_idx_item = torch.tensor(shuffle[int(G.number_of_nodes('item')*0.875):]).long()
 '''采样'''
 sampler = dgl.dataloading.MultiLayerFullNeighborSampler(2)
-train_dataloader = dgl.dataloading.NodeDataLoader(
+train_dataloader = dgl.dataloading.DataLoader(
     G, {'user':train_idx.to(device)}, sampler,
     batch_size=args.batch_size,
     shuffle=False,
     drop_last=False,
     device=device)
 
-val_dataloader = dgl.dataloading.NodeDataLoader(
+val_dataloader = dgl.dataloading.DataLoader(
     G, {'user':val_idx.to(device)}, sampler,
     batch_size=args.batch_size,
     shuffle=False,
     drop_last=False,
     device=device)
 
-test_dataloader = dgl.dataloading.NodeDataLoader(
+test_dataloader = dgl.dataloading.DataLoader(
     G, {'user':test_idx.to(device)}, sampler,
     batch_size=args.batch_size,
     shuffle=False,
