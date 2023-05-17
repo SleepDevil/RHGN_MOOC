@@ -216,21 +216,21 @@ val_idx_item = torch.tensor(shuffle[int(G.number_of_nodes('item')*0.75):int(G.nu
 test_idx_item = torch.tensor(shuffle[int(G.number_of_nodes('item')*0.875):]).long()
 '''采样'''
 sampler = dgl.dataloading.MultiLayerFullNeighborSampler(2)
-train_dataloader = dgl.dataloading.NodeDataLoader(
+train_dataloader = dgl.dataloading.DataLoader(
     G, {'user':train_idx.to(device)}, sampler,
     batch_size=args.batch_size,
     shuffle=False,
     drop_last=False,
     device=device)
 
-val_dataloader = dgl.dataloading.NodeDataLoader(
+val_dataloader = dgl.dataloading.DataLoader(
     G, {'user':val_idx.to(device)}, sampler,
     batch_size=args.batch_size,
     shuffle=False,
     drop_last=False,
     device=device)
 
-test_dataloader = dgl.dataloading.NodeDataLoader(
+test_dataloader = dgl.dataloading.DataLoader(
     G, {'user':test_idx.to(device)}, sampler,
     batch_size=args.batch_size,
     shuffle=False,
@@ -242,7 +242,7 @@ if args.model=='RHGN':
     cid1_feature = torch.load('{}/cid1_feature.npy'.format(args.data_dir))
     cid2_feature = torch.load('{}/cid2_feature.npy'.format(args.data_dir))
     cid3_feature = torch.load('{}/cid3_feature.npy'.format(args.data_dir))
-    cid4_feature = torch.load('{}/cid4_feature.npy'.format(args.data_dir))
+    # cid4_feature = torch.load('{}/cid4_feature.npy'.format(args.data_dir))
 
 
     model = jd_RHGN(G,
@@ -255,7 +255,6 @@ if args.model=='RHGN':
                 cid1_feature=cid1_feature,
                 cid2_feature=cid2_feature,
                 cid3_feature=cid3_feature,
-                cid4_feature=cid4_feature,
                 use_norm = True).to(device)
     optimizer = torch.optim.AdamW(model.parameters())
 

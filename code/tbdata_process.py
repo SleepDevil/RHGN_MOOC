@@ -188,7 +188,7 @@ class dataloader():
 
 
 if __name__ == '__main__':
-    data_dir='../taobao_data/'
+    data_dir='../../MOOCCubeX/scripts'
     print('文件路径：',data_dir)
     data=dataloader(data_dir=data_dir)
     G=data.generate_pure_graph(is_save=True)

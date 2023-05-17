@@ -1,10 +1,10 @@
-import dgl
+# import dgl
 import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import dgl.function as fn
-from dgl.nn.functional import edge_softmax
+# import dgl.function as fn
+# from dgl.nn.functional import edge_softmax
 from layers import *
 from layers import RHGNLayer
 
@@ -48,13 +48,13 @@ class tb_RHGN(nn.Module):
             nn.ReLU()
         )
         self.query = nn.Linear(200, n_inp)
-        self.key = nn.Linear(200, n_inp)
-        self.value = nn.Linear(200, n_inp)
+        self.key = nn.Linear(300, n_inp)
+        self.value = nn.Linear(300, n_inp)
         self.skip = nn.Parameter(torch.ones(1))
 
     def forward(self, input_nodes, output_nodes,blocks, out_key,label_key, is_train=True,print_flag=False):
-
         item_cid1=blocks[0].srcnodes['item'].data['cid1'].unsqueeze(1)        #(N,1)
+
         cid1_feature = self.cid1_feature(item_cid1)     #       #(N,1,200)
 	
 
@@ -101,7 +101,7 @@ class tb_RHGN(nn.Module):
 
 class jd_RHGN(nn.Module):
     def __init__(self, G, node_dict, edge_dict, n_inp, n_hid, n_out, n_layers, n_heads, cid1_feature, cid2_feature,
-                 cid3_feature, cid4_feature, use_norm=True, ):
+                 cid3_feature, use_norm=True, ):
         super(jd_RHGN, self).__init__()
         self.node_dict = node_dict
         self.edge_dict = edge_dict
@@ -129,9 +129,9 @@ class jd_RHGN(nn.Module):
         self.cid3_feature.weight = nn.Parameter(cid3_feature)
         self.cid3_feature.weight.requires_grad = False
 
-        self.cid4_feature = nn.Embedding(cid4_feature.size(0), cid4_feature.size(1))
-        self.cid4_feature.weight = nn.Parameter(cid4_feature)
-        self.cid4_feature.weight.requires_grad = False
+        # self.cid4_feature = nn.Embedding(cid4_feature.size(0), cid4_feature.size(1))
+        # self.cid4_feature.weight = nn.Parameter(cid4_feature)
+        # self.cid4_feature.weight.requires_grad = False
 
         self.excitation = nn.Sequential(
             nn.Linear(4, 32, bias=False),
@@ -139,9 +139,9 @@ class jd_RHGN(nn.Module):
             nn.Linear(32, 4, bias=False),
             nn.ReLU()
         )
-        self.query = nn.Linear(200, n_inp)
-        self.key = nn.Linear(200, n_inp)
-        self.value = nn.Linear(200, n_inp)
+        self.query = nn.Linear(300, n_inp)
+        self.key = nn.Linear(300, n_inp)
+        self.value = nn.Linear(300, n_inp)
         self.skip = nn.Parameter(torch.ones(1))
         self.l1=nn.Linear(200, n_inp)
         self.l2=nn.Linear(200, n_inp)
@@ -163,17 +163,17 @@ class jd_RHGN(nn.Module):
         #cid3_fature = self.l3(cid3_feature)
 
         item_cid4 = blocks[0].srcnodes['item'].data['brand'].unsqueeze(1)  # (N,1)
-        cid4_feature = self.cid4_feature(item_cid4)  # #(N,1,200)
+        # cid4_feature = self.cid4_feature(item_cid4)  # #(N,1,200)
         #cid4_feature = self.l4(cid4_feature)
 
         cid2_feature=cid1_feature
         cid3_feature=cid1_feature
-        cid4_feature=cid1_feature
+        # cid4_feature=cid1_feature
 
         item_feature = blocks[0].srcnodes['item'].data['inp']
         user_feature = blocks[0].srcnodes['user'].data['inp']
 
-        inputs = torch.cat((cid1_feature, cid2_feature, cid3_feature, cid4_feature), 1)  # (N,4,200)
+        inputs = torch.cat((cid1_feature, cid2_feature, cid3_feature), 1)  # (N,4,200)
         k = self.key(inputs)  # (N,4,200)
         v = self.value(inputs)  # (N,4,200)
         q = self.query(item_feature.unsqueeze(-2))  # (N,1,32)

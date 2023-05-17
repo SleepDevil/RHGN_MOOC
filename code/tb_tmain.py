@@ -53,6 +53,7 @@ def Batch_train(model):
         total_acc = 0
         count = 0
         for input_nodes, output_nodes, blocks in train_dataloader:
+            print(input_nodes.keys(), output_nodes.keys(), 998)
             Batch_logits,Batch_labels = model(input_nodes,output_nodes,blocks, out_key='user',label_key=args.label, is_train=True)
 
             # The loss is computed only for labeled nodes.
@@ -130,10 +131,9 @@ def Batch_train(model):
             torch.cuda.empty_cache()
 
 device = torch.device("cuda:{}".format(args.gpu))
-print(dgl.__path__)
 '''加载图和标签'''
 G=torch.load('{}/{}.pkl'.format(args.data_dir,args.graph))
-# print(G)
+print(G, "GGGGG")
 # G=torch.load('../taobao_data/G_ori.pkl')
 labels=G.nodes['user'].data[args.label]
 print(labels.max().item()+1)
@@ -145,9 +145,9 @@ train_idx = torch.tensor(shuffle[0:int(len(labels)*0.75)]).long()
 val_idx = torch.tensor(shuffle[int(len(labels)*0.75):int(len(labels)*0.875)]).long()
 test_idx = torch.tensor(shuffle[int(len(labels)*0.875):]).long()
 
-print(train_idx.shape)
-print(val_idx.shape)
-print(test_idx.shape)
+print(train_idx.shape, 123)
+print(val_idx.shape, 345)
+print(test_idx.shape, 567)
 
 
 node_dict = {}

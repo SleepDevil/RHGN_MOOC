@@ -92,7 +92,7 @@ class dataloader():
         G = dgl.heterograph(data_dict)
 
 
-        model = fasttext.load_model('../data/fasttext/fastText/cc.zh.200.bin')
+        model = fasttext.load_model('D:\\gradu\\fastText\\cc.zh.300.bin')
         temp = {k: model.get_sentence_vector(v) for v, k in self.cid1_dic.items()}
         cid1_feature = torch.tensor([temp[k] for _, k in self.cid1_dic.items()])
 
