@@ -92,6 +92,7 @@ class dataloader():
             ('user', 'click', 'item'): (torch.tensor(click_user), torch.tensor(click_item)),
             ('item', 'click-by', 'user'): (torch.tensor(click_item), torch.tensor(click_user)),
                     }
+        print(data_dict)
         G = dgl.heterograph(data_dict)
 
 
@@ -188,7 +189,7 @@ class dataloader():
 
 
 if __name__ == '__main__':
-    data_dir='../../MOOCCubeX/scripts'
+    data_dir='../taobao_data'
     print('文件路径：',data_dir)
     data=dataloader(data_dir=data_dir)
     G=data.generate_pure_graph(is_save=True)

@@ -53,7 +53,6 @@ def Batch_train(model):
         total_acc = 0
         count = 0
         for input_nodes, output_nodes, blocks in train_dataloader:
-            print(input_nodes.keys(), output_nodes.keys(), 998)
             Batch_logits,Batch_labels = model(input_nodes,output_nodes,blocks, out_key='user',label_key=args.label, is_train=True)
 
             # The loss is computed only for labeled nodes.
